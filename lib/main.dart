@@ -15,7 +15,7 @@ class ProgrammingTutorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Programming Tutor',
+      title: 'Kódigo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       // Pantalla inicial: Login
