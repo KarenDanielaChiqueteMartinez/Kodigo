@@ -146,7 +146,7 @@ class AppTheme {
         ),
       ),
       
-      bottomNavigationBarTheme: const BottomNavigationBarTheme(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: cardWhite,
         selectedItemColor: primaryBlue,
         unselectedItemColor: textSecondary,
