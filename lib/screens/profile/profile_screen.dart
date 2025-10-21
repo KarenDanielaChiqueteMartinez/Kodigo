@@ -3,6 +3,7 @@ import '../../models/user.dart';
 import '../../models/user_progress.dart';
 import '../../services/auth_service.dart';
 import '../../services/progress_service.dart';
+import 'edit_profile_screen.dart';
 
 /// Pantalla de perfil del usuario
 /// Muestra información personal, estadísticas y opciones de configuración
@@ -215,30 +216,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   /// Editar perfil
-  void _editProfile() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Editar Perfil'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Funcionalidad de edición próximamente'),
-            SizedBox(height: 8),
-            Text(
-              'Podrás cambiar tu foto, nombre y biografía',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Entendido'),
-          ),
-        ],
+  void _editProfile() async {
+    if (_currentUser == null) return;
+    
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfileScreen(user: _currentUser!),
       ),
     );
+    
+    // Si hubo cambios, recargar datos
+    if (result == true) {
+      _loadData();
+    }
   }
 
   @override
@@ -436,7 +427,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         icon: const Icon(Icons.share),
         label: const Text('Compartir mi progreso'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF58CC02),
+          backgroundColor: const Color(0xFF1976D2),
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
@@ -481,8 +472,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: const Icon(Icons.add),
             label: const Text('Añadir amigos'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF58CC02),
-              side: const BorderSide(color: Color(0xFF58CC02)),
+              foregroundColor: const Color(0xFF1976D2),
+              side: const BorderSide(color: Color(0xFF1976D2)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
