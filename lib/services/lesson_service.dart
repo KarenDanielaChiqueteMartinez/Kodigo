@@ -1023,7 +1023,7 @@ for (String nombre in nombres) {
 
 **Recorrer con índice y valor:**
 for (int i = 0; i < nombres.length; i++) {
-    print("Posición $i: ${nombres[i]}");
+    print("Posición " + i.toString() + ": " + nombres[i]);
 }
 
 **Buscar en un array:**
