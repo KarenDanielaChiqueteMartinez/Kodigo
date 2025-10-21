@@ -5,6 +5,7 @@ import '../../services/auth_service.dart';
 import '../../services/lesson_service.dart';
 import '../../widgets/lesson_card.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_loader.dart';
 import 'lesson_detail_screen.dart';
 
 /// Pantalla principal de lecciones
@@ -100,7 +101,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
         automaticallyImplyLeading: false,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const CustomLoader(message: 'Cargando lecciones...')
           : Column(
               children: [
                 // Información del usuario

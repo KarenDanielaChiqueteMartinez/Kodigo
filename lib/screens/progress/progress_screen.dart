@@ -10,6 +10,7 @@ import '../../widgets/progress_chart.dart';
 import '../../widgets/recommendation_card.dart';
 import '../../widgets/stats_card.dart';
 import '../../widgets/activity_calendar.dart';
+import '../../widgets/custom_loader.dart';
 
 /// Pantalla de progreso y recomendaciones personalizadas
 /// Muestra estadísticas del usuario y recomendaciones generadas por KNN
@@ -118,7 +119,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const CustomLoader(message: 'Analizando tu progreso...')
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
