@@ -9,6 +9,7 @@ import '../../services/knn_service.dart';
 import '../../widgets/progress_chart.dart';
 import '../../widgets/recommendation_card.dart';
 import '../../widgets/stats_card.dart';
+import '../../widgets/activity_calendar.dart';
 
 /// Pantalla de progreso y recomendaciones personalizadas
 /// Muestra estadísticas del usuario y recomendaciones generadas por KNN
@@ -128,6 +129,13 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
                   // Estadísticas generales
                   _buildStatsSection(),
+                  const SizedBox(height: 24),
+
+                  // Calendario de actividad mensual
+                  ActivityCalendar(
+                    userProgress: _userProgress,
+                    currentMonth: DateTime.now(),
+                  ),
                   const SizedBox(height: 24),
 
                   // Gráfico de progreso
