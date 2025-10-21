@@ -367,7 +367,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Expanded(
                 child: _buildStatCard(
-                  '🔥',
+                  Icons.local_fire_department,
                   '$_currentStreak',
                   'Racha diaria',
                   Colors.orange,
@@ -376,7 +376,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildStatCard(
-                  '⭐',
+                  Icons.stars,
                   '${_currentUser?.totalScore ?? 0}',
                   'XP total',
                   Colors.purple,
@@ -390,7 +390,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   /// Construye una tarjeta de estadística
-  Widget _buildStatCard(String emoji, String value, String label, Color color) {
+  Widget _buildStatCard(IconData icon, String value, String label, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -399,9 +399,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          Text(
-            emoji,
-            style: const TextStyle(fontSize: 32),
+          Icon(
+            icon,
+            size: 36,
+            color: color,
           ),
           const SizedBox(height: 8),
           Text(
