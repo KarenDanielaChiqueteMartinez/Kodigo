@@ -3,6 +3,7 @@ import '../../models/user.dart';
 import '../../models/user_progress.dart';
 import '../../services/auth_service.dart';
 import '../../services/progress_service.dart';
+import '../../widgets/custom_loader.dart';
 import 'edit_profile_screen.dart';
 
 /// Pantalla de perfil del usuario
@@ -388,7 +389,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const CustomLoader(message: 'Cargando perfil...')
           : SingleChildScrollView(
               child: Column(
                 children: [

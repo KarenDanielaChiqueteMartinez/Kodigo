@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'custom_loader.dart';
 
 /// Widget personalizado para botones
 /// Proporciona un estilo consistente y manejo de estados de carga
@@ -37,13 +38,9 @@ class CustomButton extends StatelessWidget {
         disabledBackgroundColor: Colors.grey[300],
       ),
       child: isLoading
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
+          ? const DotLoader(
+              color: Colors.white,
+              size: 40,
             )
           : child,
     );
