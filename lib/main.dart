@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'core/theme/app_theme.dart';
 
 /// Punto de entrada principal de la aplicación
 /// Configura el tema y la navegación inicial
@@ -16,37 +17,7 @@ class ProgrammingTutorApp extends StatelessWidget {
     return MaterialApp(
       title: 'Programming Tutor',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // Colores suaves y amigables para una app educativa
-        primarySwatch: Colors.blue,
-        primaryColor: const Color(0xFF4A90E2),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4A90E2),
-          brightness: Brightness.light,
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF4A90E2),
-          foregroundColor: Colors.white,
-          elevation: 2,
-        ),
-        cardTheme: const CardThemeData(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4A90E2),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          ),
-        ),
-      ),
+      theme: AppTheme.lightTheme,
       // Pantalla inicial: Login
       home: const LoginScreen(),
       // Rutas nombradas para navegación
