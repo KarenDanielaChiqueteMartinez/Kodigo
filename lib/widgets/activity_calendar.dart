@@ -6,21 +6,24 @@ import '../models/user_progress.dart';
 /// Visualiza los días en que el usuario ha estudiado lecciones
 class ActivityCalendar extends StatelessWidget {
   final List<UserProgress> userProgress;
-  final DateTime currentMonth;
+  final DateTime? currentMonth;
 
   const ActivityCalendar({
     super.key,
     required this.userProgress,
-    DateTime? currentMonth,
-  }) : currentMonth = currentMonth ?? const _DefaultDateTime();
+    this.currentMonth,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Usar mes actual si no se proporciona
+    final DateTime month = currentMonth ?? DateTime.now();
+    
     // Calcular actividad por día
     Map<DateTime, int> activityByDay = _calculateActivityByDay();
     
     // Obtener días del mes actual
-    List<DateTime> daysInMonth = _getDaysInMonth(currentMonth);
+    List<DateTime> daysInMonth = _getDaysInMonth(month);
     
     return Card(
       child: Padding(
@@ -46,7 +49,7 @@ class ActivityCalendar extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              _getMonthYearText(currentMonth),
+              _getMonthYearText(month),
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 14,
@@ -344,11 +347,4 @@ class ActivityCalendar extends StatelessWidget {
     
     return '${months[date.month - 1]} ${date.year}';
   }
-}
-
-/// Clase auxiliar para proporcionar fecha actual por defecto
-class _DefaultDateTime extends DateTime {
-  const _DefaultDateTime() : super(0);
-  
-  factory _DefaultDateTime.now() => _DefaultDateTime();
 }
