@@ -110,11 +110,22 @@ class _LessonsScreenState extends State<LessonsScreen> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                       colors: [
-                        Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColor.withOpacity(0.8),
+                        const Color(0xFF1976D2), // Azul principal
+                        const Color(0xFF42A5F5), // Azul claro
+                        const Color(0xFF64B5F6), // Azul muy claro
                       ],
+                      stops: const [0.0, 0.6, 1.0],
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF1976D2).withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,12 +167,29 @@ class _LessonsScreenState extends State<LessonsScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: FilterChip(
-                          label: Text(category),
+                          label: Text(
+                            category,
+                            style: TextStyle(
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                              color: isSelected ? const Color(0xFF1976D2) : Colors.grey[700],
+                            ),
+                          ),
                           selected: isSelected,
                           onSelected: (_) => _filterLessons(category),
-                          backgroundColor: Colors.grey[200],
-                          selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
-                          checkmarkColor: Theme.of(context).primaryColor,
+                          backgroundColor: Colors.white,
+                          selectedColor: const Color(0xFF1976D2).withOpacity(0.1),
+                          checkmarkColor: const Color(0xFF1976D2),
+                          elevation: 0,
+                          pressElevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                              color: isSelected 
+                                  ? const Color(0xFF1976D2).withOpacity(0.5)
+                                  : Colors.grey.withOpacity(0.2),
+                              width: 1.5,
+                            ),
+                          ),
                         ),
                       );
                     },
