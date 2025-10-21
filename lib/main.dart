@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/auth/login_screen.dart';
-import 'screens/lessons/lessons_screen.dart';
-import 'screens/progress/progress_screen.dart';
+import 'screens/home/home_screen.dart';
 
 /// Punto de entrada principal de la aplicación
 /// Configura el tema y la navegación inicial
@@ -53,8 +52,7 @@ class ProgrammingTutorApp extends StatelessWidget {
       // Rutas nombradas para navegación
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/lessons': (context) => const LessonsScreen(),
-        '/progress': (context) => const ProgressScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }

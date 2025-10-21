@@ -55,8 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (success && mounted) {
-        // Navegar a la pantalla de lecciones
-        Navigator.of(context).pushReplacementNamed('/lessons');
+        // Navegar a la pantalla principal
+        Navigator.of(context).pushReplacementNamed('/home');
       } else if (mounted) {
         _showErrorDialog('Error de autenticación. Verifica tus datos.');
       }

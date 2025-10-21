@@ -97,51 +97,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lecciones'),
-        actions: [
-          // Botón de progreso
-          IconButton(
-            icon: const Icon(Icons.analytics),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/progress');
-            },
-            tooltip: 'Ver progreso',
-          ),
-          // Menú de usuario
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'logout') {
-                _logout();
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: const [
-                    Icon(Icons.logout),
-                    SizedBox(width: 8),
-                    Text('Cerrar sesión'),
-                  ],
-                ),
-              ),
-            ],
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Text(
-                  _currentUser?.name.isNotEmpty == true 
-                      ? _currentUser!.name[0].toUpperCase()
-                      : 'U',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        automaticallyImplyLeading: false,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
