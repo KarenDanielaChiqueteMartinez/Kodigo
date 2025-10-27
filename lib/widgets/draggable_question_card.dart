@@ -31,6 +31,23 @@ class _DraggableQuestionCardState extends State<DraggableQuestionCard> {
   void initState() {
     super.initState();
     _availableOptions = List<String>.from(widget.question.options);
+    _resetState();
+  }
+
+  @override
+  void didUpdateWidget(DraggableQuestionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Si cambió la pregunta, resetear el estado
+    if (oldWidget.question.id != widget.question.id) {
+      _resetState();
+      _availableOptions = List<String>.from(widget.question.options);
+    }
+  }
+
+  void _resetState() {
+    _droppedAnswer = null;
+    _hasSubmitted = false;
+    _isCorrect = false;
   }
 
   @override

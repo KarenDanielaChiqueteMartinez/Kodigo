@@ -38,13 +38,19 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     _startTime = DateTime.now();
     _questionResults = List.filled(widget.lesson.questions.length, false);
     
+    print('🚀 Iniciando lección: ${widget.lesson.title}');
+    print('   Total de preguntas: ${widget.lesson.questions.length}');
+    print('   Preguntas IDs: ${widget.lesson.questions.map((q) => q.id).join(", ")}');
+    
     // Si hay módulos interactivos, mostrarlos primero
     if (widget.lesson.interactiveModules != null && 
         widget.lesson.interactiveModules!.isNotEmpty) {
       _showingInteractiveModules = true;
       _moduleScores.addAll(List.filled(widget.lesson.interactiveModules!.length, 0));
+      print('   Módulos interactivos: ${widget.lesson.interactiveModules!.length}');
     } else {
       _showingInteractiveModules = false;
+      print('   Sin módulos interactivos');
     }
   }
 
@@ -80,12 +86,17 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
 
   /// Avanza a la siguiente pregunta o completa la lección
   void _nextQuestion() {
+    print('🔄 _nextQuestion llamado');
+    print('   Pregunta actual: ${_currentQuestionIndex + 1}/${widget.lesson.questions.length}');
+    
     if (_currentQuestionIndex < widget.lesson.questions.length - 1) {
+      print('   ➡️ Avanzando a pregunta ${_currentQuestionIndex + 2}');
       setState(() {
         _currentQuestionIndex++;
         _attempts++;
       });
     } else {
+      print('   🏁 Última pregunta completada, llamando _completeLesson()');
       _completeLesson();
     }
   }
@@ -497,10 +508,12 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
 
                   // Pregunta actual con drag & drop
                   DraggableQuestionCard(
+                    key: ValueKey('question_${_currentQuestionIndex}_${currentQuestion.id}'),
                     question: currentQuestion,
                     questionNumber: _currentQuestionIndex + 1,
                     totalQuestions: widget.lesson.questions.length,
                     onCorrectAnswer: () {
+                      print('✅ Respuesta correcta en pregunta ${_currentQuestionIndex + 1}');
                       setState(() {
                         _questionResults[_currentQuestionIndex] = true;
                         _score += (100 / widget.lesson.questions.length).round();
