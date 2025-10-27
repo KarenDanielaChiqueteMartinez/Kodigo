@@ -10,23 +10,39 @@ class ProgressService {
   /// Guarda el progreso de una lección completada
   Future<bool> saveProgress(UserProgress progress) async {
     try {
+      print('📦 ProgressService: Iniciando guardado...');
       final prefs = await SharedPreferences.getInstance();
+      print('📦 SharedPreferences obtenido');
       
       // Obtener progreso existente
       List<UserProgress> existingProgress = await getAllProgress();
+      print('📦 Progreso existente: ${existingProgress.length} registros');
       
       // Agregar nuevo progreso
       existingProgress.add(progress);
+      print('📦 Nuevo progreso agregado. Total: ${existingProgress.length}');
       
       // Guardar en SharedPreferences
       List<Map<String, dynamic>> progressList = 
           existingProgress.map((p) => p.toMap()).toList();
       String progressJson = json.encode(progressList);
+      print('📦 JSON generado: ${progressJson.length} caracteres');
       
-      await prefs.setString(_progressKey, progressJson);
-      return true;
-    } catch (e) {
-      print('Error guardando progreso: $e');
+      bool saved = await prefs.setString(_progressKey, progressJson);
+      print('📦 Guardado en SharedPreferences: $saved');
+      
+      // Verificar que se guardó correctamente
+      String? verification = prefs.getString(_progressKey);
+      if (verification != null) {
+        print('✅ Verificación exitosa: Datos guardados correctamente');
+        return true;
+      } else {
+        print('❌ Verificación falló: No se encontraron los datos');
+        return false;
+      }
+    } catch (e, stackTrace) {
+      print('❌ Error guardando progreso: $e');
+      print('Stack trace: $stackTrace');
       return false;
     }
   }

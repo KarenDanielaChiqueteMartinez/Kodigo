@@ -98,15 +98,31 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
       _isCompleted = true;
     });
 
+    bool progressSaved = false;
+    String errorMessage = '';
+
     try {
       final authService = AuthService();
       final progressService = ProgressService();
       final currentUser = await authService.getCurrentUser();
 
-      if (currentUser != null && _startTime != null) {
+      print('🔍 Iniciando guardado de progreso...');
+      print('📊 Usuario actual: ${currentUser?.name ?? "null"}');
+      print('📝 Lección: ${widget.lesson.id}');
+      print('🎯 Puntuación: $_score');
+
+      if (currentUser == null) {
+        errorMessage = 'No se encontró usuario activo';
+        print('❌ Error: $errorMessage');
+      } else if (_startTime == null) {
+        errorMessage = 'No se registró tiempo de inicio';
+        print('❌ Error: $errorMessage');
+      } else {
         // Calcular tiempo transcurrido
         double timeSpent = DateTime.now().difference(_startTime!).inMinutes.toDouble();
         if (timeSpent < 1) timeSpent = 1; // Mínimo 1 minuto
+
+        print('⏱️ Tiempo invertido: $timeSpent minutos');
 
         // Crear registro de progreso
         UserProgress progress = UserProgress(
@@ -121,42 +137,64 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
         );
 
         // Guardar progreso
-        await progressService.saveProgress(progress);
-
-        // Actualizar estadísticas del usuario
-        int newTotalScore = currentUser.totalScore + _score;
-        int newLessonsCompleted = currentUser.lessonsCompleted + 1;
+        print('💾 Guardando progreso...');
+        progressSaved = await progressService.saveProgress(progress);
         
-        // Calcular nuevo promedio de tiempo
-        double newAverageTime = currentUser.lessonsCompleted > 0
-            ? ((currentUser.averageTimePerLesson * currentUser.lessonsCompleted) + timeSpent) / newLessonsCompleted
-            : timeSpent;
+        if (progressSaved) {
+          print('✅ Progreso guardado exitosamente');
 
-        // Calcular nuevo nivel (cada 500 puntos = 1 nivel)
-        int newLevel = (newTotalScore / 500).floor() + 1;
+          // Actualizar estadísticas del usuario
+          int newTotalScore = currentUser.totalScore + _score;
+          int newLessonsCompleted = currentUser.lessonsCompleted + 1;
+          
+          // Calcular nuevo promedio de tiempo
+          double newAverageTime = currentUser.lessonsCompleted > 0
+              ? ((currentUser.averageTimePerLesson * currentUser.lessonsCompleted) + timeSpent) / newLessonsCompleted
+              : timeSpent;
 
-        // Actualizar usuario
-        var updatedUser = currentUser.copyWith(
-          totalScore: newTotalScore,
-          lessonsCompleted: newLessonsCompleted,
-          averageTimePerLesson: newAverageTime,
-          currentLevel: newLevel,
-          lastActivity: DateTime.now(),
-        );
+          // Calcular nuevo nivel (cada 500 puntos = 1 nivel)
+          int newLevel = (newTotalScore / 500).floor() + 1;
 
-        await authService.updateCurrentUser(updatedUser);
+          print('📈 Actualizando usuario...');
+          print('   Total Score: $newTotalScore');
+          print('   Lecciones completadas: $newLessonsCompleted');
+          print('   Nuevo nivel: $newLevel');
+
+          // Actualizar usuario
+          var updatedUser = currentUser.copyWith(
+            totalScore: newTotalScore,
+            lessonsCompleted: newLessonsCompleted,
+            averageTimePerLesson: newAverageTime,
+            currentLevel: newLevel,
+            lastActivity: DateTime.now(),
+          );
+
+          bool userUpdated = await authService.updateCurrentUser(updatedUser);
+          
+          if (userUpdated) {
+            print('✅ Usuario actualizado exitosamente');
+          } else {
+            print('⚠️ No se pudo actualizar usuario');
+            errorMessage = 'Progreso guardado pero no se actualizó el usuario';
+          }
+        } else {
+          errorMessage = 'No se pudo guardar el progreso';
+          print('❌ Error: $errorMessage');
+        }
       }
 
       // Mostrar diálogo de felicitaciones
-      _showCompletionDialog();
-    } catch (e) {
-      print('Error guardando progreso: $e');
-      _showCompletionDialog();
+      _showCompletionDialog(progressSaved, errorMessage);
+    } catch (e, stackTrace) {
+      errorMessage = e.toString();
+      print('❌ Error guardando progreso: $e');
+      print('Stack trace: $stackTrace');
+      _showCompletionDialog(false, errorMessage);
     }
   }
 
   /// Muestra el diálogo de felicitaciones al completar la lección
-  void _showCompletionDialog() {
+  void _showCompletionDialog(bool progressSaved, String errorMessage) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -205,6 +243,41 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Indicador de guardado
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: progressSaved ? Colors.green[50] : Colors.orange[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: progressSaved ? Colors.green : Colors.orange,
+                  width: 2,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    progressSaved ? Icons.cloud_done : Icons.warning,
+                    color: progressSaved ? Colors.green : Colors.orange,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      progressSaved 
+                          ? '✅ Progreso guardado' 
+                          : '⚠️ ${errorMessage.isEmpty ? "No se pudo guardar" : errorMessage}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: progressSaved ? Colors.green[900] : Colors.orange[900],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ],
               ),
