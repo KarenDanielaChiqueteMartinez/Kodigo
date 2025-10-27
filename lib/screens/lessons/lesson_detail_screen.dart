@@ -5,6 +5,7 @@ import '../../services/progress_service.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/interactive_lesson_module.dart';
+import '../../widgets/draggable_question_card.dart';
 
 /// Pantalla de detalles de una lección
 /// Muestra el contenido y permite realizar ejercicios interactivos
@@ -22,8 +23,6 @@ class LessonDetailScreen extends StatefulWidget {
 
 class _LessonDetailScreenState extends State<LessonDetailScreen> {
   int _currentQuestionIndex = 0;
-  int? _selectedAnswerIndex;
-  bool _showExplanation = false;
   bool _isCompleted = false;
   int _score = 0;
   int _attempts = 0;
@@ -78,40 +77,13 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     });
   }
 
-  /// Selecciona una respuesta para la pregunta actual
-  void _selectAnswer(int index) {
-    if (_showExplanation) return;
-    
-    setState(() {
-      _selectedAnswerIndex = index;
-    });
-  }
-
-  /// Confirma la respuesta seleccionada
-  void _confirmAnswer() {
-    if (_selectedAnswerIndex == null || _showExplanation) return;
-
-    Question currentQuestion = widget.lesson.questions[_currentQuestionIndex];
-    bool isCorrect = _selectedAnswerIndex == currentQuestion.correctAnswerIndex;
-
-    setState(() {
-      _showExplanation = true;
-      _attempts++;
-      _questionResults[_currentQuestionIndex] = isCorrect;
-      
-      if (isCorrect) {
-        _score += (100 / widget.lesson.questions.length).round();
-      }
-    });
-  }
 
   /// Avanza a la siguiente pregunta o completa la lección
   void _nextQuestion() {
     if (_currentQuestionIndex < widget.lesson.questions.length - 1) {
       setState(() {
         _currentQuestionIndex++;
-        _selectedAnswerIndex = null;
-        _showExplanation = false;
+        _attempts++;
       });
     } else {
       _completeLesson();
@@ -405,13 +377,13 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
           // Contenido de la lección
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Información de la lección
+                  // Información de la lección (solo en la primera pregunta)
                   if (_currentQuestionIndex == 0) ...[
                     Card(
+                      margin: const EdgeInsets.all(16),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -448,166 +420,23 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
                   ],
 
-                  // Pregunta actual
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Pregunta ${_currentQuestionIndex + 1}',
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            currentQuestion.question,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Opciones de respuesta
-                          ...currentQuestion.options.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            String option = entry.value;
-                            bool isSelected = _selectedAnswerIndex == index;
-                            bool isCorrect = index == currentQuestion.correctAnswerIndex;
-                            bool showResult = _showExplanation;
-
-                            Color? backgroundColor;
-                            Color? borderColor;
-                            IconData? icon;
-
-                            if (showResult) {
-                              if (isCorrect) {
-                                backgroundColor = Colors.green[50];
-                                borderColor = Colors.green;
-                                icon = Icons.check_circle;
-                              } else if (isSelected && !isCorrect) {
-                                backgroundColor = Colors.red[50];
-                                borderColor = Colors.red;
-                                icon = Icons.cancel;
-                              }
-                            } else if (isSelected) {
-                              backgroundColor = Theme.of(context).primaryColor.withOpacity(0.1);
-                              borderColor = Theme.of(context).primaryColor;
-                            }
-
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: InkWell(
-                                onTap: () => _selectAnswer(index),
-                                borderRadius: BorderRadius.circular(8),
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: backgroundColor,
-                                    border: Border.all(
-                                      color: borderColor ?? Colors.grey[300]!,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          option,
-                                          style: TextStyle(
-                                            fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                                          ),
-                                        ),
-                                      ),
-                                      if (icon != null)
-                                        Icon(
-                                          icon,
-                                          color: isCorrect ? Colors.green : Colors.red,
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-
-                          // Explicación
-                          if (_showExplanation) ...[
-                            const SizedBox(height: 16),
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.blue[50],
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.blue[200]!),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.lightbulb_outline,
-                                        color: Colors.blue[700],
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'Explicación',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue[700],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(currentQuestion.explanation),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+                  // Pregunta actual con drag & drop
+                  DraggableQuestionCard(
+                    question: currentQuestion,
+                    questionNumber: _currentQuestionIndex + 1,
+                    totalQuestions: widget.lesson.questions.length,
+                    onCorrectAnswer: () {
+                      setState(() {
+                        _questionResults[_currentQuestionIndex] = true;
+                        _score += (100 / widget.lesson.questions.length).round();
+                      });
+                      _nextQuestion();
+                    },
                   ),
                 ],
               ),
-            ),
-          ),
-
-          // Botones de acción
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                if (_showExplanation)
-                  Expanded(
-                    child: CustomButton(
-                      onPressed: _nextQuestion,
-                      child: Text(
-                        _currentQuestionIndex < widget.lesson.questions.length - 1
-                            ? 'Siguiente pregunta'
-                            : 'Completar lección',
-                      ),
-                    ),
-                  )
-                else
-                  Expanded(
-                    child: CustomButton(
-                      onPressed: _selectedAnswerIndex != null ? _confirmAnswer : null,
-                      child: const Text('Confirmar respuesta'),
-                    ),
-                  ),
-              ],
             ),
           ),
         ],
