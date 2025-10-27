@@ -56,12 +56,17 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
 
   /// Maneja la finalización de un módulo interactivo
   void _onModuleComplete(int correctAnswers, int totalActivities) {
+    print('🎯 Módulo ${_currentModuleIndex + 1} completado');
+    print('   Respuestas correctas: $correctAnswers/$totalActivities');
+    
     setState(() {
       _moduleScores[_currentModuleIndex] = correctAnswers;
       
       // Calcular puntos del módulo (máximo 20 puntos por módulo)
       double moduleScore = (correctAnswers / totalActivities) * 20;
       _score += moduleScore.round();
+      print('   Puntos del módulo: ${moduleScore.round()}');
+      print('   Score total actual: $_score');
     });
 
     // Avanzar al siguiente módulo o a las preguntas tradicionales
@@ -69,13 +74,20 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
       if (mounted) {
         setState(() {
           if (_currentModuleIndex < widget.lesson.interactiveModules!.length - 1) {
+            print('   ➡️ Avanzando al módulo ${_currentModuleIndex + 2}');
             _currentModuleIndex++;
           } else {
             // Terminar módulos interactivos, pasar a preguntas tradicionales
+            print('   ✅ Todos los módulos completados');
+            print('   📝 Cambiando a preguntas tradicionales...');
+            print('   Total de preguntas tradicionales: ${widget.lesson.questions.length}');
             _showingInteractiveModules = false;
             if (widget.lesson.questions.isEmpty) {
               // Si no hay preguntas, completar la lección
+              print('   ⚠️ No hay preguntas tradicionales, completando lección');
               _completeLesson();
+            } else {
+              print('   🎮 Iniciando ${widget.lesson.questions.length} preguntas con drag & drop');
             }
           }
         });
