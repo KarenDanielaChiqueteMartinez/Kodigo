@@ -4,6 +4,7 @@ import '../../models/user_progress.dart';
 import '../../services/progress_service.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/interactive_lesson_module.dart';
 
 /// Pantalla de detalles de una lección
 /// Muestra el contenido y permite realizar ejercicios interactivos
@@ -28,12 +29,53 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
   int _attempts = 0;
   DateTime? _startTime;
   List<bool> _questionResults = [];
+  bool _showingInteractiveModules = true;
+  int _currentModuleIndex = 0;
+  final List<int> _moduleScores = [];
 
   @override
   void initState() {
     super.initState();
     _startTime = DateTime.now();
     _questionResults = List.filled(widget.lesson.questions.length, false);
+    
+    // Si hay módulos interactivos, mostrarlos primero
+    if (widget.lesson.interactiveModules != null && 
+        widget.lesson.interactiveModules!.isNotEmpty) {
+      _showingInteractiveModules = true;
+      _moduleScores.addAll(List.filled(widget.lesson.interactiveModules!.length, 0));
+    } else {
+      _showingInteractiveModules = false;
+    }
+  }
+
+  /// Maneja la finalización de un módulo interactivo
+  void _onModuleComplete(int correctAnswers, int totalActivities) {
+    setState(() {
+      _moduleScores[_currentModuleIndex] = correctAnswers;
+      
+      // Calcular puntos del módulo (máximo 20 puntos por módulo)
+      double moduleScore = (correctAnswers / totalActivities) * 20;
+      _score += moduleScore.round();
+    });
+
+    // Avanzar al siguiente módulo o a las preguntas tradicionales
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          if (_currentModuleIndex < widget.lesson.interactiveModules!.length - 1) {
+            _currentModuleIndex++;
+          } else {
+            // Terminar módulos interactivos, pasar a preguntas tradicionales
+            _showingInteractiveModules = false;
+            if (widget.lesson.questions.isEmpty) {
+              // Si no hay preguntas, completar la lección
+              _completeLesson();
+            }
+          }
+        });
+      }
+    });
   }
 
   /// Selecciona una respuesta para la pregunta actual
@@ -210,8 +252,118 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     );
   }
 
+  /// Construye la vista para módulos interactivos
+  Widget _buildInteractiveModuleView() {
+    final modules = widget.lesson.interactiveModules!;
+    final currentModule = modules[_currentModuleIndex];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.lesson.title),
+        actions: [
+          // Progreso de módulos
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                'Módulo ${_currentModuleIndex + 1}/${modules.length}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Barra de progreso
+          LinearProgressIndicator(
+            value: (_currentModuleIndex + 1) / modules.length,
+            backgroundColor: Colors.grey[300],
+            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+          ),
+
+          // Contenido del módulo
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Información de la lección (solo en el primer módulo)
+                  if (_currentModuleIndex == 0) ...[
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.info_outline,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Acerca de esta lección',
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Text(widget.lesson.description),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Conceptos que aprenderás:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: widget.lesson.concepts.map((concept) {
+                                return Chip(
+                                  label: Text(concept),
+                                  backgroundColor: Colors.blue[50],
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Módulo interactivo actual
+                  InteractiveLessonModule(
+                    module: currentModule,
+                    onModuleComplete: _onModuleComplete,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Mostrar módulos interactivos si están disponibles y aún no se han completado
+    if (_showingInteractiveModules && 
+        widget.lesson.interactiveModules != null &&
+        widget.lesson.interactiveModules!.isNotEmpty) {
+      return _buildInteractiveModuleView();
+    }
+
+    // Si no hay preguntas ni módulos, mostrar mensaje
     if (widget.lesson.questions.isEmpty) {
       return Scaffold(
         appBar: AppBar(

@@ -11,6 +11,7 @@ class Lesson {
   final List<Question> questions; // preguntas/ejercicios
   final int estimatedMinutes;
   final bool isCompleted;
+  final List<InteractiveModule>? interactiveModules; // módulos interactivos
 
   const Lesson({
     required this.id,
@@ -23,6 +24,7 @@ class Lesson {
     required this.questions,
     required this.estimatedMinutes,
     this.isCompleted = false,
+    this.interactiveModules,
   });
 
   /// Convierte la lección a un mapa
@@ -38,6 +40,7 @@ class Lesson {
       'questions': questions.map((q) => q.toMap()).toList(),
       'estimatedMinutes': estimatedMinutes,
       'isCompleted': isCompleted,
+      'interactiveModules': interactiveModules?.map((m) => m.toMap()).toList(),
     };
   }
 
@@ -56,6 +59,9 @@ class Lesson {
           .toList() ?? [],
       estimatedMinutes: map['estimatedMinutes'] ?? 5,
       isCompleted: map['isCompleted'] ?? false,
+      interactiveModules: (map['interactiveModules'] as List<dynamic>?)
+          ?.map((m) => InteractiveModule.fromMap(m as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -71,6 +77,7 @@ class Lesson {
     List<Question>? questions,
     int? estimatedMinutes,
     bool? isCompleted,
+    List<InteractiveModule>? interactiveModules,
   }) {
     return Lesson(
       id: id ?? this.id,
@@ -83,6 +90,7 @@ class Lesson {
       questions: questions ?? this.questions,
       estimatedMinutes: estimatedMinutes ?? this.estimatedMinutes,
       isCompleted: isCompleted ?? this.isCompleted,
+      interactiveModules: interactiveModules ?? this.interactiveModules,
     );
   }
 }
@@ -123,5 +131,136 @@ class Question {
       correctAnswerIndex: map['correctAnswerIndex'] ?? 0,
       explanation: map['explanation'] ?? '',
     );
+  }
+}
+
+/// Modelo que representa un módulo interactivo dentro de una lección
+class InteractiveModule {
+  final String id;
+  final String title;
+  final String explanation; // breve explicación del concepto
+  final CodeExample? codeExample; // ejemplo de código
+  final List<Activity> activities; // actividades prácticas
+
+  const InteractiveModule({
+    required this.id,
+    required this.title,
+    required this.explanation,
+    this.codeExample,
+    required this.activities,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'explanation': explanation,
+      'codeExample': codeExample?.toMap(),
+      'activities': activities.map((a) => a.toMap()).toList(),
+    };
+  }
+
+  factory InteractiveModule.fromMap(Map<String, dynamic> map) {
+    return InteractiveModule(
+      id: map['id'] ?? '',
+      title: map['title'] ?? '',
+      explanation: map['explanation'] ?? '',
+      codeExample: map['codeExample'] != null 
+          ? CodeExample.fromMap(map['codeExample'] as Map<String, dynamic>)
+          : null,
+      activities: (map['activities'] as List<dynamic>?)
+          ?.map((a) => Activity.fromMap(a as Map<String, dynamic>))
+          .toList() ?? [],
+    );
+  }
+}
+
+/// Modelo que representa un ejemplo de código
+class CodeExample {
+  final String code;
+  final String language; // dart, javascript, python, etc.
+  final String? description; // descripción adicional del código
+
+  const CodeExample({
+    required this.code,
+    this.language = 'dart',
+    this.description,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'code': code,
+      'language': language,
+      'description': description,
+    };
+  }
+
+  factory CodeExample.fromMap(Map<String, dynamic> map) {
+    return CodeExample(
+      code: map['code'] ?? '',
+      language: map['language'] ?? 'dart',
+      description: map['description'],
+    );
+  }
+}
+
+/// Tipos de actividad interactiva
+enum ActivityType {
+  fillInBlank,     // completar línea de código
+  multipleChoice,  // elegir respuesta correcta
+  dragAndDrop,     // arrastrar y soltar bloques
+}
+
+/// Modelo que representa una actividad práctica
+class Activity {
+  final String id;
+  final ActivityType type;
+  final String question;
+  final Map<String, dynamic> data; // datos específicos de cada tipo
+  final String correctAnswer; // respuesta correcta
+  final String feedback; // retroalimentación
+
+  const Activity({
+    required this.id,
+    required this.type,
+    required this.question,
+    required this.data,
+    required this.correctAnswer,
+    required this.feedback,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'type': type.toString(),
+      'question': question,
+      'data': data,
+      'correctAnswer': correctAnswer,
+      'feedback': feedback,
+    };
+  }
+
+  factory Activity.fromMap(Map<String, dynamic> map) {
+    return Activity(
+      id: map['id'] ?? '',
+      type: _parseActivityType(map['type'] ?? ''),
+      question: map['question'] ?? '',
+      data: Map<String, dynamic>.from(map['data'] ?? {}),
+      correctAnswer: map['correctAnswer'] ?? '',
+      feedback: map['feedback'] ?? '',
+    );
+  }
+
+  static ActivityType _parseActivityType(String typeString) {
+    switch (typeString) {
+      case 'ActivityType.fillInBlank':
+        return ActivityType.fillInBlank;
+      case 'ActivityType.multipleChoice':
+        return ActivityType.multipleChoice;
+      case 'ActivityType.dragAndDrop':
+        return ActivityType.dragAndDrop;
+      default:
+        return ActivityType.multipleChoice;
+    }
   }
 }

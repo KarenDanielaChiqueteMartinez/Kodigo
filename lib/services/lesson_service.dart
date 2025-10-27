@@ -61,6 +61,118 @@ int edad = 25;
 String nombre = "Juan";
 bool esEstudiante = true;
       ''',
+      interactiveModules: [
+        InteractiveModule(
+          id: 'var_001_mod1',
+          title: '¿Qué es una Variable?',
+          explanation: '''Una variable es como una caja con una etiqueta donde guardas información. Por ejemplo, si quieres guardar tu edad, creas una variable llamada "edad" y guardas el número 25 dentro.
+
+Las variables te permiten:
+• Almacenar información para usar después
+• Cambiar valores cuando sea necesario
+• Hacer cálculos y operaciones
+
+Imagina que tienes una caja llamada "puntos" donde guardas tu puntuación en un juego. Cada vez que ganas, puedes cambiar el número dentro de esa caja.''',
+          codeExample: CodeExample(
+            code: '''// Declarar variables de diferentes tipos
+int edad = 25;           // Número entero
+String nombre = "María";  // Texto
+bool activo = true;      // Verdadero o falso
+double precio = 19.99;   // Número decimal
+
+// Usar las variables
+print("Nombre: " + nombre);
+print("Edad: " + edad.toString());''',
+            language: 'dart',
+            description: 'Ejemplos de cómo declarar y usar variables en Dart',
+          ),
+          activities: [
+            Activity(
+              id: 'var_001_act1',
+              type: ActivityType.multipleChoice,
+              question: '¿Cuál de las siguientes es la mejor analogía para una variable?',
+              data: {
+                'options': [
+                  'Un candado que no se puede abrir',
+                  'Una caja con etiqueta donde guardas cosas',
+                  'Un número que nunca cambia',
+                  'Una operación matemática'
+                ],
+              },
+              correctAnswer: 'Una caja con etiqueta donde guardas cosas',
+              feedback: 'Exacto! Una variable es como una caja etiquetada donde puedes guardar y cambiar información.',
+            ),
+            Activity(
+              id: 'var_001_act2',
+              type: ActivityType.fillInBlank,
+              question: 'Completa la declaración correcta de una variable entera:',
+              data: {
+                'codeTemplate': '___  edad = 25;',
+                'options': ['int', 'var', 'String', 'number'],
+                'blankPosition': '___',
+              },
+              correctAnswer: 'int',
+              feedback: '¡Correcto! "int" es la palabra clave para declarar números enteros en Dart y muchos otros lenguajes.',
+            ),
+          ],
+        ),
+        InteractiveModule(
+          id: 'var_001_mod2',
+          title: 'Declarando Variables',
+          explanation: '''Para crear una variable necesitas tres cosas:
+
+1. **El tipo**: Qué clase de información vas a guardar (int, String, bool, etc.)
+2. **El nombre**: Cómo vas a llamar a tu variable (debe ser descriptivo)
+3. **El valor**: La información que guardas (puede cambiar después)
+
+Sintaxis básica:
+tipo nombreVariable = valor;
+
+Ejemplo: int puntos = 100;
+- "int" es el tipo (número entero)
+- "puntos" es el nombre
+- "100" es el valor inicial''',
+          codeExample: CodeExample(
+            code: '''// Declaración básica
+int puntos = 0;
+
+// Cambiar el valor
+puntos = 50;
+puntos = 100;
+
+// Usar el valor en operaciones
+int puntosDobles = puntos * 2;
+print("Puntos totales: " + puntosDobles.toString());''',
+            language: 'dart',
+            description: 'Cómo declarar y modificar variables',
+          ),
+          activities: [
+            Activity(
+              id: 'var_001_mod2_act1',
+              type: ActivityType.fillInBlank,
+              question: '¿Qué palabra usamos para asignar un valor a una variable?',
+              data: {
+                'codeTemplate': 'int edad ___ 18;',
+                'options': ['=', '==', ':', '->'],
+                'blankPosition': '___',
+              },
+              correctAnswer: '=',
+              feedback: '¡Perfecto! El operador = (igual) se usa para asignar valores. No confundir con == que compara.',
+            ),
+            Activity(
+              id: 'var_001_mod2_act2',
+              type: ActivityType.dragAndDrop,
+              question: 'Ordena las partes de una declaración de variable correctamente:',
+              data: {
+                'blocks': ['int', 'edad', '=', '25', ';'],
+                'slots': 5,
+              },
+              correctAnswer: 'int,edad,=,25,;',
+              feedback: '¡Excelente! La sintaxis correcta es: tipo nombre = valor;',
+            ),
+          ],
+        ),
+      ],
       questions: [
         Question(
           id: 'var_001_q1',
@@ -170,6 +282,69 @@ Cada tipo tiene características específicas:
 • Los strings van entre comillas
 • Los booleanos solo pueden ser verdadero o falso
       ''',
+      interactiveModules: [
+        InteractiveModule(
+          id: 'var_002_mod1',
+          title: 'Entendiendo los Tipos de Datos',
+          explanation: '''Cada tipo de dato sirve para guardar información diferente, como tener diferentes tipos de cajas para diferentes cosas:
+
+🔢 **int (entero)**: Para números sin decimales como tu edad (25), cantidad de likes (142)
+💰 **double (decimal)**: Para números con decimales como precios (19.99), temperaturas (36.5)
+📝 **String (texto)**: Para palabras y frases entre comillas como nombres ("Ana"), mensajes ("Hola")
+✓ **bool (booleano)**: Solo true o false, como un interruptor prendido/apagado
+
+Es importante elegir el tipo correcto para cada situación.''',
+          codeExample: CodeExample(
+            code: '''// Ejemplos de cada tipo
+int edad = 25;              // Entero
+double altura = 1.75;       // Decimal
+String nombre = "Carlos";   // Texto (entre comillas)
+bool esMayorDeEdad = true;  // Booleano
+
+// Errores comunes a evitar:
+// String edad = 25;        ❌ Incorrecto
+// int precio = 19.99;      ❌ Incorrecto
+// bool activo = "true";    ❌ Incorrecto''',
+            language: 'dart',
+            description: 'Ejemplos correctos e incorrectos de uso de tipos',
+          ),
+          activities: [
+            Activity(
+              id: 'var_002_mod1_act1',
+              type: ActivityType.multipleChoice,
+              question: '¿Qué tipo de dato usarías para almacenar el nombre de una persona?',
+              data: {
+                'options': ['int', 'double', 'String', 'bool'],
+              },
+              correctAnswer: 'String',
+              feedback: '¡Correcto! Los nombres son texto, por lo que usamos String (siempre entre comillas).',
+            ),
+            Activity(
+              id: 'var_002_mod1_act2',
+              type: ActivityType.fillInBlank,
+              question: 'Completa la declaración para guardar un precio con decimales:',
+              data: {
+                'codeTemplate': '___ precio = 19.99;',
+                'options': ['int', 'double', 'String', 'bool'],
+                'blankPosition': '___',
+              },
+              correctAnswer: 'double',
+              feedback: '¡Perfecto! Para números con decimales usamos double. int solo sirve para números enteros.',
+            ),
+            Activity(
+              id: 'var_002_mod1_act3',
+              type: ActivityType.dragAndDrop,
+              question: 'Ordena el código para declarar un booleano correctamente:',
+              data: {
+                'blocks': ['bool', 'activo', '=', 'true', ';'],
+                'slots': 5,
+              },
+              correctAnswer: 'bool,activo,=,true,;',
+              feedback: '¡Excelente! Los booleanos se declaran con "bool" y solo pueden ser true o false (sin comillas).',
+            ),
+          ],
+        ),
+      ],
       questions: [
         Question(
           id: 'var_002_q1',
@@ -273,6 +448,157 @@ Los operadores de comparación son:
 • >= (mayor o igual)
 • <= (menor o igual)
       ''',
+      interactiveModules: [
+        InteractiveModule(
+          id: 'cond_001_mod1',
+          title: 'Tomando Decisiones con IF',
+          explanation: '''Los condicionales son como tomar decisiones en la vida real. Por ejemplo: "Si llueve, llevo paraguas. Si no llueve, no lo llevo."
+
+En programación funciona igual:
+• **IF**: "Si la condición es verdadera, haz esto"
+• **ELSE**: "Si no (es falsa), haz esto otro"
+
+La condición siempre se evalúa como true (verdadero) o false (falso). El programa decide qué camino tomar basándose en esa evaluación.
+
+Ejemplo práctico:
+Si tu puntuación >= 60, muestras "Aprobado"
+Si no, muestras "Reprobado"''',
+          codeExample: CodeExample(
+            code: '''int puntos = 75;
+
+// Ejemplo básico de IF
+if (puntos >= 60) {
+    print("¡Aprobado!");
+} else {
+    print("Reprobado");
+}
+
+// IF sin else (opcional)
+if (puntos > 90) {
+    print("¡Excelente trabajo!");
+}
+
+// Múltiples condiciones
+if (puntos >= 90) {
+    print("A - Sobresaliente");
+} else if (puntos >= 70) {
+    print("B - Notable");
+} else {
+    print("C - Suficiente");
+}''',
+            language: 'dart',
+            description: 'Diferentes formas de usar condicionales IF',
+          ),
+          activities: [
+            Activity(
+              id: 'cond_001_mod1_act1',
+              type: ActivityType.multipleChoice,
+              question: 'Si edad = 20, ¿qué imprime este código?\nif (edad >= 18) { print("Mayor"); } else { print("Menor"); }',
+              data: {
+                'options': ['Mayor', 'Menor', 'Ambos', 'Ninguno'],
+              },
+              correctAnswer: 'Mayor',
+              feedback: '¡Correcto! Como 20 >= 18 es verdadero, se ejecuta el bloque IF e imprime "Mayor".',
+            ),
+            Activity(
+              id: 'cond_001_mod1_act2',
+              type: ActivityType.fillInBlank,
+              question: 'Completa el operador para verificar si dos valores son iguales:',
+              data: {
+                'codeTemplate': 'if (edad ___ 18) { print("Tiene 18"); }',
+                'options': ['==', '=', '!=', '>='],
+                'blankPosition': '___',
+              },
+              correctAnswer: '==',
+              feedback: '¡Perfecto! El operador == compara si dos valores son iguales. No confundir con = que asigna.',
+            ),
+            Activity(
+              id: 'cond_001_mod1_act3',
+              type: ActivityType.dragAndDrop,
+              question: 'Ordena las partes de un IF correctamente:',
+              data: {
+                'blocks': ['if', '(edad > 18)', '{', 'print("OK");', '}'],
+                'slots': 5,
+              },
+              correctAnswer: 'if,(edad > 18),{,print("OK");,}',
+              feedback: '¡Excelente! La sintaxis correcta es: if (condición) { código }',
+            ),
+          ],
+        ),
+        InteractiveModule(
+          id: 'cond_001_mod2',
+          title: 'Operadores de Comparación',
+          explanation: '''Los operadores de comparación nos permiten comparar valores:
+
+**==** : Igual a (¿son lo mismo?)
+**!=** : Diferente de (¿son distintos?)
+**>**  : Mayor que
+**<**  : Menor que
+**>=** : Mayor o igual que
+**<=** : Menor o igual que
+
+Estos operadores siempre devuelven true o false.
+
+Ejemplos:
+• 5 > 3 → true
+• 10 == 10 → true
+• 7 < 5 → false
+• 15 != 20 → true''',
+          codeExample: CodeExample(
+            code: '''int nota = 85;
+
+// Operador >
+if (nota > 60) {
+    print("Aprobado");
+}
+
+// Operador ==
+if (nota == 100) {
+    print("¡Perfecto!");
+}
+
+// Operador !=
+if (nota != 0) {
+    print("Hiciste el examen");
+}
+
+// Operador >=
+if (nota >= 70) {
+    print("Buen trabajo");
+}
+
+// Combinar en una variable
+bool esBuenaNota = nota >= 80;
+print(esBuenaNota); // imprime: true''',
+            language: 'dart',
+            description: 'Ejemplos de todos los operadores de comparación',
+          ),
+          activities: [
+            Activity(
+              id: 'cond_001_mod2_act1',
+              type: ActivityType.multipleChoice,
+              question: '¿Cuál es el resultado de: 10 >= 10?',
+              data: {
+                'options': ['true', 'false', 'Error', '10'],
+              },
+              correctAnswer: 'true',
+              feedback: '¡Correcto! El operador >= es "mayor o igual", y 10 es igual a 10, por lo tanto es true.',
+            ),
+            Activity(
+              id: 'cond_001_mod2_act2',
+              type: ActivityType.fillInBlank,
+              question: '¿Qué operador verifica si dos valores son diferentes?',
+              data: {
+                'codeTemplate': 'if (x ___ y) { print("Son diferentes"); }',
+                'options': ['!=', '==', '<>', '=/='],
+                'blankPosition': '___',
+              },
+              correctAnswer: '!=',
+              feedback: '¡Perfecto! El operador != significa "no igual" o "diferente de".',
+            ),
+          ],
+        ),
+      ],
       questions: [
         Question(
           id: 'cond_001_q1',
@@ -375,6 +701,82 @@ Partes del bucle:
 • Condición: i < 5 (se verifica antes de cada iteración)
 • Incremento: i++ (se ejecuta después de cada iteración)
       ''',
+      interactiveModules: [
+        InteractiveModule(
+          id: 'loop_001_mod1',
+          title: 'Repetir Código con FOR',
+          explanation: '''Los bucles FOR son perfectos cuando necesitas repetir algo un número específico de veces. Es como decir "haz esto 10 veces" o "cuenta del 1 al 5".
+
+El bucle FOR tiene 3 partes importantes:
+1. **Inicialización**: Donde empiezas (int i = 0)
+2. **Condición**: Hasta dónde llegas (i < 5)
+3. **Incremento**: Cómo avanzas (i++ significa sumar 1)
+
+Piensa en i como un contador que va aumentando:
+• Primera vuelta: i = 0
+• Segunda vuelta: i = 1
+• Tercera vuelta: i = 2
+... y así hasta que la condición sea falsa.''',
+          codeExample: CodeExample(
+            code: '''// Bucle básico: contar del 0 al 4
+for (int i = 0; i < 5; i++) {
+    print("Vuelta número: " + i.toString());
+}
+
+// Contar del 1 al 10
+for (int i = 1; i <= 10; i++) {
+    print(i);
+}
+
+// Contar de 2 en 2
+for (int i = 0; i < 10; i += 2) {
+    print(i); // imprime: 0, 2, 4, 6, 8
+}
+
+// Cuenta regresiva
+for (int i = 5; i > 0; i--) {
+    print(i); // imprime: 5, 4, 3, 2, 1
+}''',
+            language: 'dart',
+            description: 'Diferentes formas de usar bucles FOR',
+          ),
+          activities: [
+            Activity(
+              id: 'loop_001_mod1_act1',
+              type: ActivityType.multipleChoice,
+              question: '¿Cuántas veces se ejecuta este bucle?\nfor (int i = 0; i < 3; i++) { print(i); }',
+              data: {
+                'options': ['2 veces', '3 veces', '4 veces', 'Infinitas veces'],
+              },
+              correctAnswer: '3 veces',
+              feedback: '¡Correcto! Se ejecuta con i=0, i=1, i=2. Son 3 veces en total.',
+            ),
+            Activity(
+              id: 'loop_001_mod1_act2',
+              type: ActivityType.fillInBlank,
+              question: 'Completa el bucle para que cuente del 1 al 5:',
+              data: {
+                'codeTemplate': 'for (int i = 1; i ___ 5; i++) { }',
+                'options': ['<=', '<', '>', '=='],
+                'blankPosition': '___',
+              },
+              correctAnswer: '<=',
+              feedback: '¡Perfecto! Usamos <= para incluir el 5. Si usaras <, solo llegaría hasta el 4.',
+            ),
+            Activity(
+              id: 'loop_001_mod1_act3',
+              type: ActivityType.dragAndDrop,
+              question: 'Ordena las partes del bucle FOR correctamente:',
+              data: {
+                'blocks': ['for', '(int i = 0;', 'i < 5;', 'i++)', '{', 'print(i);', '}'],
+                'slots': 7,
+              },
+              correctAnswer: 'for,(int i = 0;,i < 5;,i++),{,print(i);,}',
+              feedback: '¡Excelente! Recuerda: for (inicio; condición; incremento) { código }',
+            ),
+          ],
+        ),
+      ],
       questions: [
         Question(
           id: 'loop_001_q1',
