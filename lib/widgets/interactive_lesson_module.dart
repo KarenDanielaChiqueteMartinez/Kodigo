@@ -282,6 +282,9 @@ class _InteractiveLessonModuleState extends State<InteractiveLessonModule> {
   }
 
   void _onActivityComplete(bool isCorrect) {
+    print('🎯 Actividad ${_currentActivityIndex + 1}/${widget.module.activities.length} completada');
+    print('   Respuesta correcta: $isCorrect');
+    
     setState(() {
       _activityResults[_currentActivityIndex] = isCorrect;
     });
@@ -292,16 +295,19 @@ class _InteractiveLessonModuleState extends State<InteractiveLessonModule> {
         if (mounted) {
           if (_currentActivityIndex < widget.module.activities.length - 1) {
             // Pasar a la siguiente actividad
+            print('   ➡️ Avanzando a actividad ${_currentActivityIndex + 2}');
             setState(() {
               _currentActivityIndex++;
             });
           } else {
             // Completar el módulo
+            print('   ✅ Todas las actividades del módulo completadas');
             setState(() {
               _moduleCompleted = true;
             });
             
             final correctAnswers = _activityResults.where((r) => r).length;
+            print('   📊 Enviando callback onModuleComplete: $correctAnswers/${_activityResults.length}');
             widget.onModuleComplete(correctAnswers, _activityResults.length);
           }
         }
