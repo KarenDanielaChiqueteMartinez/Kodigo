@@ -152,19 +152,23 @@ class ActivityCalendar extends StatelessWidget {
       calendarCells.add(_buildDayCell(day, activity, context));
     }
     
-    return Wrap(
-      spacing: 4,
-      runSpacing: 4,
-      children: calendarCells,
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+        childAspectRatio: 1,
+      ),
+      itemCount: calendarCells.length,
+      itemBuilder: (context, index) => calendarCells[index],
     );
   }
 
   /// Construye una celda vacía
   Widget _buildEmptyCell() {
-    return const SizedBox(
-      width: 36,
-      height: 36,
-    );
+    return const SizedBox.shrink();
   }
 
   /// Construye una celda de día con indicador de actividad
@@ -173,14 +177,12 @@ class ActivityCalendar extends StatelessWidget {
     Color cellColor = _getActivityColor(activity, context);
     
     return Container(
-      width: 36,
-      height: 36,
       decoration: BoxDecoration(
         color: cellColor,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(8),
         border: isToday ? Border.all(
           color: Theme.of(context).primaryColor,
-          width: 2,
+          width: 2.5,
         ) : null,
       ),
       child: Stack(
@@ -189,8 +191,8 @@ class ActivityCalendar extends StatelessWidget {
             child: Text(
               '${day.day}',
               style: TextStyle(
-                fontSize: 12,
-                fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                fontSize: 13,
+                fontWeight: isToday ? FontWeight.bold : FontWeight.w500,
                 color: activity > 0 ? Colors.white : Colors.grey[800],
               ),
             ),
